@@ -1,24 +1,32 @@
 import logo from './logo.svg';
 import './App.css';
+import {useEffect, useState} from "react";
+import {ContactList} from "./components/ContactList";
+import {Container, Grid} from "@mui/material";
 
 function App() {
+  const url = "https://randomuser.me/api/?results=50";
+  const [data,setData]= useState(null)
+  useEffect(()=>{
+    fetch(url)
+        .then(data=>data.json())
+        .then(data=>setData(data.results))
+        .catch(error=>{throw(error)})
+  },[])
+  console.log("Data",data)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Container maxWidth="xl" sx={{marginTop:2}}>
+        <Grid  container spacing={2}>
+            {data ? data.map(contact=>{
+                return(
+                    <Grid item xs={4}>
+                        <ContactList contact={contact}/>
+                    </Grid>
+                )
+            }): null}
+        </Grid>
+
+      </Container>
   );
 }
 
